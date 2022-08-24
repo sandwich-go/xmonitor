@@ -10,11 +10,12 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 )
 
-type HTTPCollector interface {
+type Collector interface {
 	MonitorRequest(request *http.Request) func(statusCode, size int)
+	MonitorLogic(uri string) func(status string)
 }
 
-func NewHttpCollector(opts ...CollectorConfOption) HTTPCollector {
+func NewCollector(opts ...CollectorConfOption) Collector {
 	conf := NewCollectorConf(opts...)
 	if conf.MonitorRegister == nil {
 		panic("must set MonitorRegister")
@@ -26,9 +27,11 @@ func NewHttpCollector(opts ...CollectorConfOption) HTTPCollector {
 }
 
 const (
-	tagMethod = "method"
-	tagPath   = "path"
-	tagStatus = "http_status"
+	tagMethod      = "method"
+	tagPath        = "path"
+	tagStatus      = "http_status"
+	tagUri         = "uri"
+	tagLogicStatus = "status"
 )
 
 var (
@@ -36,7 +39,11 @@ var (
 	inFlowCounter    *prometheus.CounterVec
 	outFlowCounter   *prometheus.CounterVec
 	requestCounter   *prometheus.CounterVec
-	initOnce         sync.Once
+
+	logicLatency *prometheus.HistogramVec
+	logicCounter *prometheus.CounterVec
+
+	initOnce sync.Once
 )
 
 func initMetrics(cc *CollectorConf) {
@@ -70,10 +77,27 @@ func initMetrics(cc *CollectorConf) {
 				ConstLabels: cc.ConstLabels,
 			}, []string{tagMethod, tagPath, tagStatus})
 
+		logicLatency = prometheus.NewHistogramVec(
+			prometheus.HistogramOpts{
+				Name:        "server_logic_latency",
+				Help:        "The server logic latencies in seconds.",
+				Buckets:     cc.Buckets,
+				ConstLabels: cc.ConstLabels,
+			}, []string{tagUri})
+
+		logicCounter = prometheus.NewCounterVec(
+			prometheus.CounterOpts{
+				Name:        "server_logic_count",
+				Help:        "Total number of logic made.",
+				ConstLabels: cc.ConstLabels,
+			}, []string{tagUri, tagLogicStatus})
+
 		cc.MonitorRegister(latencyHistogram)
 		cc.MonitorRegister(inFlowCounter)
 		cc.MonitorRegister(outFlowCounter)
 		cc.MonitorRegister(requestCounter)
+		cc.MonitorRegister(logicLatency)
+		cc.MonitorRegister(logicCounter)
 	})
 }
 
@@ -81,7 +105,15 @@ type httpCollector struct {
 	conf *CollectorConf
 }
 
-func (h httpCollector) MonitorRequest(request *http.Request) func(statusCode, size int) {
+func (h *httpCollector) MonitorLogic(uri string) func(string) {
+	start := time.Now()
+	return func(status string) {
+		logicLatency.WithLabelValues(uri).Observe(time.Since(start).Seconds())
+		logicCounter.WithLabelValues(uri, status).Inc()
+	}
+}
+
+func (h *httpCollector) MonitorRequest(request *http.Request) func(statusCode, size int) {
 	if h.conf.Skip != nil && h.conf.Skip(request) {
 		return func(_, _ int) {}
 	}
