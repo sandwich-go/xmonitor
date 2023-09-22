@@ -15,10 +15,6 @@ func CollectorConfOptionDeclareWithDefault() interface{} {
 		"MonitorRegister": MonitorRegisterFunc(nil),
 		// annotation@Buckets(comment="histogram buckets 监控耗时桶(单位秒)，参考 https://cloud.tencent.com/developer/article/1495303")
 		"Buckets": []float64{.005, .01, .025, .05, .1, .25, .5, 1, 2.5, 5, 10},
-		// annotation@Skip(xconf="-"，comment="是否跳过监控")
-		"Skip": SkipFunc(func(_ *http.Request) bool {
-			return false
-		}),
 		"IgnoreLatency": IgnoreLatencyFunc(func(code int) bool {
 			return code != http.StatusOK
 		}),
@@ -27,9 +23,6 @@ func CollectorConfOptionDeclareWithDefault() interface{} {
 
 // MonitorRegisterFunc monitor collector register
 type MonitorRegisterFunc func(prometheus.Collector)
-
-// SkipFunc if skip monitor return true else return false
-type SkipFunc func(r *http.Request) bool
 
 // IgnoreLatencyFunc ignore latency func
 type IgnoreLatencyFunc func(code int) bool

@@ -1,9 +1,7 @@
 package xmonitor
 
 import (
-	"net/http"
 	"strconv"
-	"strings"
 	"sync"
 	"time"
 
@@ -11,7 +9,7 @@ import (
 )
 
 type Collector interface {
-	MonitorRequest(request *http.Request) func(statusCode, size int)
+	MonitorRequest(method, path string, reqSize int) func(statusCode, respSize int)
 	MonitorLogic(uri string) func(status string)
 }
 
@@ -113,25 +111,18 @@ func (h *httpCollector) MonitorLogic(uri string) func(string) {
 	}
 }
 
-func (h *httpCollector) MonitorRequest(request *http.Request) func(statusCode, size int) {
-	if h.conf.Skip != nil && h.conf.Skip(request) {
-		return func(_, _ int) {}
+func (h *httpCollector) MonitorRequest(method, path string, reqSize int) func(statusCode, respSize int) {
+	if reqSize > 0 {
+		inFlowCounter.WithLabelValues(method, path).Add(float64(reqSize))
 	}
-	path := request.URL.EscapedPath()
-	method := strings.ToLower(request.Method)
-
-	inFlowCounter.WithLabelValues(method, path).Add(float64(calcRequestSize(request)))
 	start := time.Now()
-
-	return func(statusCode, size int) {
-		//size must >= 0
-		if size < 0 {
-			size = 0
-		}
+	return func(statusCode, respSize int) {
 		if h.conf.IgnoreLatency != nil && !h.conf.IgnoreLatency(statusCode) {
 			latencyHistogram.WithLabelValues(method, path).Observe(time.Since(start).Seconds())
 		}
 		requestCounter.WithLabelValues(method, path, strconv.Itoa(statusCode)).Inc()
-		outFlowCounter.WithLabelValues(method, path).Add(float64(size))
+		if respSize > 0 {
+			outFlowCounter.WithLabelValues(method, path).Add(float64(respSize))
+		}
 	}
 }

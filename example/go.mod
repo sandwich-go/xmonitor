@@ -6,13 +6,13 @@ require (
 	github.com/gin-gonic/gin v1.9.1
 	github.com/prometheus/client_golang v1.16.0
 	github.com/sandwich-go/logbus v1.1.0-daily.1
-	github.com/sandwich-go/xmonitor latest
-	github.com/sandwich-go/xmonitor/ginmid latest
+	github.com/sandwich-go/xmonitor v0.1.0-alpha.3
+	github.com/sandwich-go/xmonitor/ginmid v0.0.0-20230922074439-79c933bb140c
 )
 
 replace (
-	github.com/sandwich-go/xmonitor latest => ../xmonitor
-	github.com/sandwich-go/xmonitor/ginmid latest => ../xmonitor/ginmid
+	github.com/sandwich-go/xmonitor v0.0.0-20230922074439-79c933bb140c => ../
+	github.com/sandwich-go/xmonitor/ginmid v0.0.0-20230922074439-79c933bb140c => ../ginmid
 )
 
 require (
