@@ -16,9 +16,8 @@ func NewMonitorMid(skipper SkipFunc, collector xmonitor.Collector) gin.HandlerFu
 			c.Next()
 			return
 		}
-		path := c.Request.URL.EscapedPath()
+		path := c.FullPath()
 		method := strings.ToLower(c.Request.Method)
-
 		after := collector.MonitorRequest(method, path, xmonitor.CalcRequestSize(c.Request))
 		c.Next()
 		after(c.Writer.Status(), c.Writer.Size())

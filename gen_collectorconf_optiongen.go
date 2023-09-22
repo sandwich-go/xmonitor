@@ -16,9 +16,7 @@ type CollectorConf struct {
 	// annotation@MonitorRegister(xconf="-"，comment="监控注册函数")
 	MonitorRegister MonitorRegisterFunc `xconf:"监控注册函数"`
 	// annotation@Buckets(comment="histogram buckets 监控耗时桶(单位秒)，参考 https://cloud.tencent.com/developer/article/1495303")
-	Buckets []float64 `xconf:"buckets" usage:"histogram buckets 监控耗时桶(单位秒)，参考 https://cloud.tencent.com/developer/article/1495303"`
-	// annotation@Skip(xconf="-"，comment="是否跳过监控")
-	Skip          SkipFunc          `xconf:"是否跳过监控"`
+	Buckets       []float64         `xconf:"buckets" usage:"histogram buckets 监控耗时桶(单位秒)，参考 https://cloud.tencent.com/developer/article/1495303"`
 	IgnoreLatency IgnoreLatencyFunc `xconf:"ignore_latency"`
 }
 
@@ -34,7 +32,7 @@ func NewCollectorConf(opts ...CollectorConfOption) *CollectorConf {
 	return cc
 }
 
-// ApplyOption apply mutiple new option and return the old ones
+// ApplyOption apply multiple new option and return the old ones
 // sample:
 // old := cc.ApplyOption(WithTimeout(time.Second))
 // defer cc.ApplyOption(old...)
@@ -76,15 +74,6 @@ func WithBuckets(v ...float64) CollectorConfOption {
 	}
 }
 
-// WithSkip option func for filed Skip
-func WithSkip(v SkipFunc) CollectorConfOption {
-	return func(cc *CollectorConf) CollectorConfOption {
-		previous := cc.Skip
-		cc.Skip = v
-		return WithSkip(previous)
-	}
-}
-
 // WithIgnoreLatency option func for filed IgnoreLatency
 func WithIgnoreLatency(v IgnoreLatencyFunc) CollectorConfOption {
 	return func(cc *CollectorConf) CollectorConfOption {
@@ -108,9 +97,6 @@ func newDefaultCollectorConf() *CollectorConf {
 		WithConstLabels(nil),
 		WithMonitorRegister(nil),
 		WithBuckets([]float64{.005, .01, .025, .05, .1, .25, .5, 1, 2.5, 5, 10}...),
-		WithSkip(func(_ *http.Request) bool {
-			return false
-		}),
 		WithIgnoreLatency(func(code int) bool {
 			return code != http.StatusOK
 		}),
@@ -164,7 +150,6 @@ func AtomicCollectorConf() CollectorConfVisitor {
 func (cc *CollectorConf) GetConstLabels() map[string]string       { return cc.ConstLabels }
 func (cc *CollectorConf) GetMonitorRegister() MonitorRegisterFunc { return cc.MonitorRegister }
 func (cc *CollectorConf) GetBuckets() []float64                   { return cc.Buckets }
-func (cc *CollectorConf) GetSkip() SkipFunc                       { return cc.Skip }
 func (cc *CollectorConf) GetIgnoreLatency() IgnoreLatencyFunc     { return cc.IgnoreLatency }
 
 // CollectorConfVisitor visitor interface for CollectorConf
@@ -172,7 +157,6 @@ type CollectorConfVisitor interface {
 	GetConstLabels() map[string]string
 	GetMonitorRegister() MonitorRegisterFunc
 	GetBuckets() []float64
-	GetSkip() SkipFunc
 	GetIgnoreLatency() IgnoreLatencyFunc
 }
 

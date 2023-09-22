@@ -14,10 +14,10 @@ func NewMonitorMid(skipper SkipFunc, collector xmonitor.Collector) fiber.Handler
 		if skipper != nil && skipper(ctx) {
 			return ctx.Next()
 		}
+		err := ctx.Next()
 		method := ctx.Route().Method
 		path := ctx.Route().Path
 		after := collector.MonitorRequest(method, path, 0)
-		err := ctx.Next()
 		// initialize with default error code
 		// https://docs.gofiber.io/guide/error-handling
 		status := fiber.StatusInternalServerError
