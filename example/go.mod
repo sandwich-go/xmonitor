@@ -7,15 +7,15 @@ require (
 	github.com/gofiber/fiber/v2 v2.49.2
 	github.com/prometheus/client_golang v1.16.0
 	github.com/sandwich-go/logbus v1.1.0-daily.1
-	github.com/sandwich-go/xmonitor v0.1.0-alpha.3.0.20230922074439-79c933bb140c
-	github.com/sandwich-go/xmonitor/fibermid v0.1.0-alpha.3.0.20230922074439-79c933bb140c
-	github.com/sandwich-go/xmonitor/ginmid v0.1.0-alpha.3.0.20230922074439-79c933bb140c
+	github.com/sandwich-go/xmonitor v0.1.0-alpha.4
+	github.com/sandwich-go/xmonitor/fibermid v0.1.0-alpha.4
+	github.com/sandwich-go/xmonitor/ginmid v0.1.0-alpha.4
 )
 
 replace (
-	github.com/sandwich-go/xmonitor v0.1.0-alpha.3.0.20230922074439-79c933bb140c => ../
-	github.com/sandwich-go/xmonitor/fibermid v0.1.0-alpha.3.0.20230922074439-79c933bb140c => ../fibermid
-	github.com/sandwich-go/xmonitor/ginmid v0.1.0-alpha.3.0.20230922074439-79c933bb140c => ../ginmid
+	github.com/sandwich-go/xmonitor v0.1.0-alpha.4 => ../
+	github.com/sandwich-go/xmonitor/fibermid v0.1.0-alpha.4 => ../fibermid
+	github.com/sandwich-go/xmonitor/ginmid v0.1.0-alpha.4 => ../ginmid
 )
 
 require (
