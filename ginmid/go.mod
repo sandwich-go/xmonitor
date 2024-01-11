@@ -4,7 +4,7 @@ go 1.19
 
 require (
 	github.com/gin-gonic/gin v1.9.1
-	github.com/sandwich-go/xmonitor v0.1.0-alpha.4
+	github.com/sandwich-go/xmonitor v0.1.0-alpha.5
 )
 
 require (
@@ -42,4 +42,4 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
 
-replace github.com/sandwich-go/xmonitor v0.1.0-alpha.4 => ../
+replace github.com/sandwich-go/xmonitor v0.1.0-alpha.5 => ../

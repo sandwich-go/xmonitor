@@ -4,7 +4,7 @@ go 1.19
 
 require (
 	github.com/gofiber/fiber/v2 v2.49.2
-	github.com/sandwich-go/xmonitor v0.1.0-alpha.4
+	github.com/sandwich-go/xmonitor v0.1.0-alpha.5
 )
 
 require (
@@ -30,4 +30,4 @@ require (
 	google.golang.org/protobuf v1.28.1 // indirect
 )
 
-replace github.com/sandwich-go/xmonitor v0.1.0-alpha.4 => ../
+replace github.com/sandwich-go/xmonitor v0.1.0-alpha.5 => ../
