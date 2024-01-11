@@ -35,8 +35,9 @@ func NewStoreCollector(opts ...CollectorConfOption) StoreCollector {
 }
 
 const (
-	tagTable   = "table"
-	tagCommand = "command"
+	tagTable       = "table"
+	tagCommand     = "command"
+	tagStoreStatus = "status"
 )
 
 var (
@@ -60,7 +61,7 @@ func initStoreMetrics(cc *CollectorConf) {
 				Name:        "store_client_request_count",
 				Help:        "The store client request count.",
 				ConstLabels: cc.ConstLabels,
-			}, []string{tagTable, tagCommand, tagStatus})
+			}, []string{tagTable, tagCommand, tagStoreStatus})
 
 		cc.MonitorRegister(storeRequestCost)
 		cc.MonitorRegister(storeRequestCount)

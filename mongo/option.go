@@ -1,6 +1,7 @@
 package mongo
 
 import (
+	"github.com/sandwich-go/xmonitor"
 	"go.mongodb.org/mongo-driver/event"
 	"time"
 )
@@ -9,7 +10,7 @@ import (
 func ConfOptionDeclareWithDefault() interface{} {
 	return map[string]interface{}{
 		// annotation@Collector(comment="metrics收集器，不能为空")
-		"Collector": StoreCollector(&noopCollector{}),
+		"Collector": xmonitor.StoreCollector(&noopCollector{}),
 		// annotation@Skipper(comment="跳过监控")
 		"Skipper": Skipper(ignorePing),
 		// annotation@SlowLogThreshold(comment="慢日志阈值")
@@ -17,11 +18,6 @@ func ConfOptionDeclareWithDefault() interface{} {
 		// annotation@OnSlowCommand(comment="慢日志回调")
 		"OnSlowCommand": OnSlowCommand(nil),
 	}
-}
-
-type StoreCollector interface {
-	RequestCost(tableName, commandName string, cost time.Duration)
-	RequestCount(tableName, commandName, status string)
 }
 
 type OnSlowCommand func(event event.CommandFinishedEvent)
@@ -37,4 +33,4 @@ func (n noopCollector) RequestCost(tableName, commandName string, cost time.Dura
 
 func (n noopCollector) RequestCount(tableName, commandName, status string) {}
 
-var _ StoreCollector = (*noopCollector)(nil)
+var _ xmonitor.StoreCollector = (*noopCollector)(nil)
