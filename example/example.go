@@ -39,7 +39,7 @@ func main() {
 	logbus.Init(logbus.NewConf(logbus.WithMonitorOutput(logbus.Prometheus)))
 
 	// new collector
-	collector := xmonitor.NewCollector(
+	collector := xmonitor.NewHttpServerCollector(
 		xmonitor.WithConstLabels(map[string]string{
 			"some": "globalValue",
 		}),
@@ -62,7 +62,7 @@ func main() {
 
 }
 
-func startFiberExample(collector xmonitor.Collector) {
+func startFiberExample(collector xmonitor.HttpServerCollector) {
 	app := fiber.New()
 	go func() {
 		defer wg.Done()
@@ -90,7 +90,7 @@ func startFiberExample(collector xmonitor.Collector) {
 	}
 }
 
-func startGinExample(collector xmonitor.Collector) {
+func startGinExample(collector xmonitor.HttpServerCollector) {
 	r := gin.New()
 
 	srv := &http.Server{

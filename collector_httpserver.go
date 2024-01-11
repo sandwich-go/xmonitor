@@ -8,12 +8,12 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 )
 
-type Collector interface {
+type HttpServerCollector interface {
 	MonitorRequest(method, path string, reqSize int) func(statusCode, respSize int)
 	MonitorLogic(uri string) func(status string)
 }
 
-func NewCollector(opts ...CollectorConfOption) Collector {
+func NewHttpServerCollector(opts ...CollectorConfOption) HttpServerCollector {
 	conf := NewCollectorConf(opts...)
 	if conf.MonitorRegister == nil {
 		panic("must set MonitorRegister")
@@ -33,6 +33,7 @@ const (
 )
 
 var (
+	// 进程内必须唯一，所以放到全局没有放到 httpCollector 内
 	latencyHistogram *prometheus.HistogramVec
 	inFlowCounter    *prometheus.CounterVec
 	outFlowCounter   *prometheus.CounterVec

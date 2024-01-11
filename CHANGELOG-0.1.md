@@ -1,7 +1,7 @@
 ### v0.1.0-alpha.2 (2022-08-24 19:46:33)
 
 #### 🚀  New Feature
-  * add logic latency, breaking_change: NewHttpCollector -> NewCollector ([6acb85f](https://github.com/sandwich-go/xmonitor/commit/6acb85f00d4d4d82ced3cb10c9d701563de5ebca)) (<small>[Daming Yang](daming.yang@centurygame.com)@2022-08-24 19:46:33 &#43;0800 &#43;0800</small>)
+  * add logic latency, breaking_change: NewHttpCollector -> NewHttpServerCollector ([6acb85f](https://github.com/sandwich-go/xmonitor/commit/6acb85f00d4d4d82ced3cb10c9d701563de5ebca)) (<small>[Daming Yang](daming.yang@centurygame.com)@2022-08-24 19:46:33 &#43;0800 &#43;0800</small>)
 
 ### v0.1.0-alpha.1 (2022-08-17 11:14:55)
 
