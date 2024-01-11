@@ -9,7 +9,7 @@ import (
 // SkipFunc if skip monitor return true else return false
 type SkipFunc func(*fiber.Ctx) bool
 
-func NewMonitorMid(skipper SkipFunc, collector xmonitor.Collector) fiber.Handler {
+func NewMonitorMid(skipper SkipFunc, collector xmonitor.HttpServerCollector) fiber.Handler {
 	return func(ctx *fiber.Ctx) error {
 		if skipper != nil && skipper(ctx) {
 			return ctx.Next()
