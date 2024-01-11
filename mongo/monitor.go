@@ -25,6 +25,9 @@ type commandMonitor struct {
 }
 
 func (c *commandMonitor) finished(_ context.Context, e event.CommandFinishedEvent, status string) {
+	if c.cc.Skipper != nil && c.cc.Skipper(e) {
+		return
+	}
 	c.cc.Collector.RequestCost(e.DatabaseName, e.CommandName, e.Duration)
 	c.cc.Collector.RequestCount(e.DatabaseName, e.CommandName, status)
 	if c.cc.SlowLogThreshold > 0 && e.Duration >= c.cc.SlowLogThreshold {
